@@ -3,12 +3,6 @@ import {
   collection, addDoc, getDocs, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-function toggleFields() {
-  const type = document.getElementById("positionType").value;
-  const batterSection = document.getElementById("batterFields");
-  batterSection.style.display = (type === "타자") ? "block" : "none";
-}
-
 function calculateAverage(atBats, hits) {
   if (atBats === 0) return "-";
   const avg = (hits / atBats).toFixed(3);
@@ -17,12 +11,6 @@ function calculateAverage(atBats, hits) {
 
 document.getElementById("recordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-
-  const position = document.getElementById("positionType").value;
-  if (position !== "타자") {
-    alert("현재는 타자 기록만 지원됩니다.");
-    return;
-  }
 
   const data = {
     name: document.getElementById("playerName").value,
@@ -39,7 +27,6 @@ document.getElementById("recordForm").addEventListener("submit", async (e) => {
   await addDoc(collection(window.db, "batters"), data);
   alert("기록 저장 완료!");
   document.getElementById("recordForm").reset();
-  toggleFields();
   loadRecords();
 });
 
@@ -68,7 +55,4 @@ async function loadRecords() {
   });
 }
 
-window.addEventListener("load", () => {
-  toggleFields();
-  loadRecords();
-});
+window.addEventListener("load", loadRecords);
