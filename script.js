@@ -16,6 +16,7 @@ document.getElementById("recordForm").addEventListener("submit", async (e) => {
 
   const data = {
     name: document.getElementById("playerName").value,
+    position: document.getElementById("positionType").value,
     atBats: Number(document.getElementById("atBats").value),
     hits: Number(document.getElementById("hits").value),
     doubleHits: Number(document.getElementById("doubleHits").value),
@@ -77,6 +78,7 @@ window.editRecord = async function (id) {
 
   document.getElementById("editId").value = id;
   document.getElementById("playerName").value = d.name;
+  document.getElementById("positionType").value = d.position || "";
   document.getElementById("atBats").value = d.atBats;
   document.getElementById("hits").value = d.hits;
   document.getElementById("doubleHits").value = d.doubleHits;
