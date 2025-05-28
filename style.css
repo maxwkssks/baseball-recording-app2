@@ -1,5 +1,7 @@
 body {
   font-family: sans-serif;
+  background: #121212;
+  color: white;
   padding: 20px;
 }
 input, button, select {
@@ -9,8 +11,19 @@ table {
   margin-top: 20px;
   width: 100%;
   border-collapse: collapse;
+  background: #1e1e1e;
 }
 th, td {
   border: 1px solid gray;
   padding: 8px;
+}
+button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+button:hover {
+  background: #555;
 }

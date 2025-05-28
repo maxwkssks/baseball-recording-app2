@@ -2,25 +2,34 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>타자 기록 입력</title>
+  <title>야구 기록 입력</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>⚾ 타자 기록 입력</h1>
+  <h1>⚾ 야구 기록 입력</h1>
 
   <form id="recordForm">
     <input type="text" id="playerName" placeholder="선수 이름" required>
-    <input type="number" id="atBats" placeholder="타수" required>
-    <input type="number" id="hits" placeholder="안타" required>
-    <input type="number" id="doubleHits" placeholder="2루타" required>
-    <input type="number" id="tripleHits" placeholder="3루타" required>
-    <input type="number" id="homeRuns" placeholder="홈런" required>
-    <input type="number" id="steals" placeholder="도루" required>
-    <input type="number" id="walks" placeholder="볼넷" required>
+    <select id="positionType" required onchange="toggleFields()">
+      <option value="">포지션 선택</option>
+      <option value="타자">타자</option>
+      <option value="투수">투수</option>
+    </select>
+
+    <div id="batterFields" style="display: none;">
+      <input type="number" id="atBats" placeholder="타수" required>
+      <input type="number" id="hits" placeholder="안타" required>
+      <input type="number" id="doubleHits" placeholder="2루타" required>
+      <input type="number" id="tripleHits" placeholder="3루타" required>
+      <input type="number" id="homeRuns" placeholder="홈런" required>
+      <input type="number" id="steals" placeholder="도루" required>
+      <input type="number" id="walks" placeholder="볼넷" required>
+    </div>
+
     <button type="submit">기록 저장</button>
   </form>
 
-  <h2>📊 타자 기록 목록</h2>
+  <h2>📊 기록 목록</h2>
   <table id="recordTable">
     <thead>
       <tr><th>선수</th><th>타수</th><th>안타</th><th>2루타</th><th>3루타</th><th>홈런</th><th>도루</th><th>볼넷</th><th>타율</th><th>날짜</th></tr>
