@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>야구 기록 앱</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>⚾ 야구 기록 입력</h1>
+
+  <form id="recordForm">
+    <input type="hidden" id="editId">
+    <input type="text" id="playerName" placeholder="선수 이름" required>
+    <select id="position" required>
+      <option value="">포지션 선택</option>
+      <option value="투수">투수</option>
+      <option value="포수">포수</option>
+      <option value="1루수">1루수</option>
+      <option value="2루수">2루수</option>
+      <option value="3루수">3루수</option>
+      <option value="유격수">유격수</option>
+      <option value="좌익수">좌익수</option>
+      <option value="중견수">중견수</option>
+      <option value="우익수">우익수</option>
+    </select>
+    <input type="number" id="atBats" placeholder="타수" required>
+    <input type="number" id="hits" placeholder="안타" required>
+    <input type="number" id="homeRuns" placeholder="홈런 수" required>
+    <button type="submit">기록 저장</button>
+  </form>
+
+  <h2>📊 기록 목록</h2>
+  <button id="exportBtn">📥 Excel로 다운로드</button>
+  <table id="recordTable">
+    <thead>
+      <tr><th>선수</th><th>포지션</th><th>타수</th><th>안타</th><th>홈런</th><th>타율</th><th>날짜</th><th>수정</th><th>삭제</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="firebase-config.js" type="module"></script>
+  <script src="script.js" type="module"></script>
+</body>
+</html>
