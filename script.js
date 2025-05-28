@@ -1,6 +1,6 @@
-// script.js
 import {
-  collection, addDoc, getDocs, query, orderBy
+  collection, addDoc, getDocs, query, orderBy,
+  doc, getDoc, updateDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 function calculateAverage(atBats, hits) {
@@ -11,6 +11,8 @@ function calculateAverage(atBats, hits) {
 
 document.getElementById("recordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  const editId = document.getElementById("editId").value;
 
   const data = {
     name: document.getElementById("playerName").value,
@@ -24,9 +26,16 @@ document.getElementById("recordForm").addEventListener("submit", async (e) => {
     date: new Date().toISOString()
   };
 
-  await addDoc(collection(window.db, "batters"), data);
-  alert("기록 저장 완료!");
+  if (editId) {
+    await updateDoc(doc(window.db, "batters", editId), data);
+    alert("기록이 수정되었습니다.");
+  } else {
+    await addDoc(collection(window.db, "batters"), data);
+    alert("기록 저장 완료!");
+  }
+
   document.getElementById("recordForm").reset();
+  document.getElementById("editId").value = "";
   loadRecords();
 });
 
@@ -36,10 +45,12 @@ async function loadRecords() {
   const q = query(collection(window.db, "batters"), orderBy("date", "desc"));
   const snapshot = await getDocs(q);
 
-  snapshot.forEach(doc => {
-    const d = doc.data();
+  snapshot.forEach(docSnap => {
+    const d = docSnap.data();
+    const id = docSnap.id;
     const date = new Date(d.date).toLocaleString();
     const avg = calculateAverage(d.atBats, d.hits);
+
     tbody.innerHTML += `<tr>
       <td>${d.name}</td>
       <td>${d.atBats}</td>
@@ -51,8 +62,36 @@ async function loadRecords() {
       <td>${d.walks}</td>
       <td>.${avg}</td>
       <td>${date}</td>
+      <td>
+        <button onclick="editRecord('${id}')">수정</button>
+        <button onclick="deleteRecord('${id}')">삭제</button>
+      </td>
     </tr>`;
   });
 }
+
+window.editRecord = async function (id) {
+  const ref = doc(window.db, "batters", id);
+  const snap = await getDoc(ref);
+  const d = snap.data();
+
+  document.getElementById("editId").value = id;
+  document.getElementById("playerName").value = d.name;
+  document.getElementById("atBats").value = d.atBats;
+  document.getElementById("hits").value = d.hits;
+  document.getElementById("doubleHits").value = d.doubleHits;
+  document.getElementById("tripleHits").value = d.tripleHits;
+  document.getElementById("homeRuns").value = d.homeRuns;
+  document.getElementById("steals").value = d.steals;
+  document.getElementById("walks").value = d.walks;
+};
+
+window.deleteRecord = async function (id) {
+  if (confirm("정말 삭제하시겠습니까?")) {
+    await deleteDoc(doc(window.db, "batters", id));
+    alert("삭제되었습니다.");
+    loadRecords();
+  }
+};
 
 window.addEventListener("load", loadRecords);

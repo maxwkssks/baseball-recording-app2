@@ -9,10 +9,18 @@
   <h1>⚾ 야구 기록 입력</h1>
 
   <form id="recordForm">
+    <input type="hidden" id="editId"> <!-- 수정용 hidden 필드 -->
     <input type="text" id="playerName" placeholder="선수 이름" required>
     <select id="positionType" required>
       <option value="">포지션 선택</option>
-      <option value="타자">타자</option>
+      <option value="타자">1루수</option>
+      <option value="타자">2루수</option>
+      <option value="타자">3루수</option>
+      <option value="타자">유격수</option>
+      <option value="타자">좌익수</option>
+      <option value="타자">우익수</option>
+      <option value="타자">중견수</option>
+      <option value="타자">포수</option>
     </select>
 
     <div id="batterFields">
@@ -31,7 +39,20 @@
   <h2>📊 기록 목록</h2>
   <table id="recordTable">
     <thead>
-      <tr><th>선수</th><th>타수</th><th>안타</th><th>2루타</th><th>3루타</th><th>홈런</th><th>도루</th><th>볼넷</th><th>타율</th><th>날짜</th></tr>
+      <tr>
+        <th>선수</th>
+        <th>타수</th>
+        <th>안타</th>
+        <th>2루타</th>
+        <th>3루타</th>
+        <th>홈런</th>
+        <th>도루</th>
+        <th>볼넷</th>
+        <th>타율</th>
+        <th>날짜</th>
+        <th>수정</th>
+        <th>삭제</th>
+      </tr>
     </thead>
     <tbody></tbody>
   </table>
