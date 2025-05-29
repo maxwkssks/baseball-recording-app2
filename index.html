@@ -13,15 +13,14 @@
     <input type="text" id="playerName" placeholder="선수 이름" required>
     <select id="positionType" onchange="toggleFields()" required>
       <option value="">포지션 선택</option>
-      <option value="타자">1루수</option>
-      <option value="타자">2루수</option>
-      <option value="타자">3루수</option>
-      <option value="타자">유격수</option>
-      <option value="타자">좌익수</option>
-      <option value="타자">우익수</option>
-      <option value="타자">중견수</option>
-      <option value="타자">포수</option>
-      <option value="타자">투수(타석기록용)</option>
+      <option value="1루수">1루수</option>
+      <option value="2루수">2루수</option>
+      <option value="3루수">3루수</option>
+      <option value="유격수">유격수</option>
+      <option value="좌익수">좌익수</option>
+      <option value="우익수">우익수</option>
+      <option value="중견수">중견수</option>
+      <option value="포수">포수</option>
       <option value="투수">투수</option>
     </select>
 
@@ -43,6 +42,7 @@
       <input type="number" id="pitcherWalks" placeholder="볼넷">
       <input type="number" id="hitsAllowed" placeholder="피안타">
       <input type="number" id="homeRunsAllowed" placeholder="피홈런">
+      <input type="number" id="runsAllowed" placeholder="실점">
     </div>
 
     <button type="submit">기록 저장</button>
@@ -54,7 +54,7 @@
       <tr>
         <th>선수</th><th>포지션</th>
         <th>타수</th><th>안타</th><th>2루타</th><th>3루타</th><th>홈런</th><th>도루</th><th>볼넷</th><th>타점</th><th>득점</th>
-        <th>이닝</th><th>삼진</th><th>볼넷</th><th>피안타</th><th>피홈런</th>
+        <th>이닝</th><th>삼진</th><th>볼넷</th><th>피안타</th><th>피홈런</th><th>실점</th><th>ERA</th>
         <th>타율</th><th>날짜</th><th>수정</th><th>삭제</th>
       </tr>
     </thead>
@@ -64,8 +64,9 @@
   <script>
     function toggleFields() {
       const position = document.getElementById("positionType").value;
-      document.getElementById("batterFields").style.display = position === "타자" ? "block" : "none";
-      document.getElementById("pitcherFields").style.display = position === "투수" ? "block" : "none";
+      const isPitcher = position === "투수";
+      document.getElementById("batterFields").style.display = isPitcher ? "none" : "block";
+      document.getElementById("pitcherFields").style.display = isPitcher ? "block" : "none";
     }
   </script>
 

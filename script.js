@@ -9,6 +9,11 @@ function calculateAverage(atBats, hits) {
   return avg.substring(1);
 }
 
+function calculateERA(runsAllowed, innings) {
+  if (!innings || innings === 0) return "-";
+  return (runsAllowed * 9 / innings).toFixed(2);
+}
+
 document.getElementById("recordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -21,7 +26,22 @@ document.getElementById("recordForm").addEventListener("submit", async (e) => {
     date: new Date().toISOString()
   };
 
-  if (position === "타자") {
+  if (position === "투수") {
+    const innings = Number(document.getElementById("innings").value);
+    const runsAllowed = Number(document.getElementById("runsAllowed").value);
+    const era = calculateERA(runsAllowed, innings);
+
+    data = {
+      ...data,
+      innings,
+      strikeouts: Number(document.getElementById("strikeouts").value),
+      pitcherWalks: Number(document.getElementById("pitcherWalks").value),
+      hitsAllowed: Number(document.getElementById("hitsAllowed").value),
+      homeRunsAllowed: Number(document.getElementById("homeRunsAllowed").value),
+      runsAllowed,
+      era
+    };
+  } else {
     data = {
       ...data,
       atBats: Number(document.getElementById("atBats").value),
@@ -33,15 +53,6 @@ document.getElementById("recordForm").addEventListener("submit", async (e) => {
       walks: Number(document.getElementById("walks").value),
       rbi: Number(document.getElementById("rbi").value),
       runs: Number(document.getElementById("runs").value)
-    };
-  } else if (position === "투수") {
-    data = {
-      ...data,
-      innings: Number(document.getElementById("innings").value),
-      strikeouts: Number(document.getElementById("strikeouts").value),
-      pitcherWalks: Number(document.getElementById("pitcherWalks").value),
-      hitsAllowed: Number(document.getElementById("hitsAllowed").value),
-      homeRunsAllowed: Number(document.getElementById("homeRunsAllowed").value)
     };
   }
 
@@ -70,22 +81,23 @@ async function loadRecords() {
     const date = new Date(d.date).toLocaleString();
     const avg = calculateAverage(d.atBats ?? 0, d.hits ?? 0);
 
-    if (d.position === "타자") {
-      tbody.innerHTML += `<tr>
-        <td>${d.name}</td><td>${d.position}</td>
-        <td>${d.atBats}</td><td>${d.hits}</td><td>${d.doubleHits}</td><td>${d.tripleHits}</td><td>${d.homeRuns}</td>
-        <td>${d.steals}</td><td>${d.walks}</td><td>${d.rbi ?? "-"}</td><td>${d.runs ?? "-"}</td>
-        <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
-        <td>.${avg}</td><td>${date}</td>
-        <td><button onclick="editRecord('${id}')">수정</button></td>
-        <td><button onclick="deleteRecord('${id}')">삭제</button></td>
-      </tr>`;
-    } else if (d.position === "투수") {
+    if (d.position === "투수") {
       tbody.innerHTML += `<tr>
         <td>${d.name}</td><td>${d.position}</td>
         <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
         <td>${d.innings}</td><td>${d.strikeouts}</td><td>${d.pitcherWalks}</td><td>${d.hitsAllowed}</td><td>${d.homeRunsAllowed}</td>
+        <td>${d.runsAllowed}</td><td>${d.era}</td>
         <td>-</td><td>${date}</td>
+        <td><button onclick="editRecord('${id}')">수정</button></td>
+        <td><button onclick="deleteRecord('${id}')">삭제</button></td>
+      </tr>`;
+    } else {
+      tbody.innerHTML += `<tr>
+        <td>${d.name}</td><td>${d.position}</td>
+        <td>${d.atBats}</td><td>${d.hits}</td><td>${d.doubleHits}</td><td>${d.tripleHits}</td><td>${d.homeRuns}</td>
+        <td>${d.steals}</td><td>${d.walks}</td><td>${d.rbi ?? "-"}</td><td>${d.runs ?? "-"}</td>
+        <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+        <td>.${avg}</td><td>${date}</td>
         <td><button onclick="editRecord('${id}')">수정</button></td>
         <td><button onclick="deleteRecord('${id}')">삭제</button></td>
       </tr>`;
@@ -102,7 +114,14 @@ window.editRecord = async function (id) {
   document.getElementById("playerName").value = d.name;
   document.getElementById("positionType").value = d.position || "";
 
-  if (d.position === "타자") {
+  if (d.position === "투수") {
+    document.getElementById("innings").value = d.innings ?? "";
+    document.getElementById("strikeouts").value = d.strikeouts ?? "";
+    document.getElementById("pitcherWalks").value = d.pitcherWalks ?? "";
+    document.getElementById("hitsAllowed").value = d.hitsAllowed ?? "";
+    document.getElementById("homeRunsAllowed").value = d.homeRunsAllowed ?? "";
+    document.getElementById("runsAllowed").value = d.runsAllowed ?? "";
+  } else {
     document.getElementById("atBats").value = d.atBats ?? "";
     document.getElementById("hits").value = d.hits ?? "";
     document.getElementById("doubleHits").value = d.doubleHits ?? "";
@@ -112,15 +131,9 @@ window.editRecord = async function (id) {
     document.getElementById("walks").value = d.walks ?? "";
     document.getElementById("rbi").value = d.rbi ?? "";
     document.getElementById("runs").value = d.runs ?? "";
-  } else if (d.position === "투수") {
-    document.getElementById("innings").value = d.innings ?? "";
-    document.getElementById("strikeouts").value = d.strikeouts ?? "";
-    document.getElementById("pitcherWalks").value = d.pitcherWalks ?? "";
-    document.getElementById("hitsAllowed").value = d.hitsAllowed ?? "";
-    document.getElementById("homeRunsAllowed").value = d.homeRunsAllowed ?? "";
   }
 
-  toggleFields(); // 포지션에 따라 입력 필드 보이기
+  toggleFields();
 };
 
 window.deleteRecord = async function (id) {
