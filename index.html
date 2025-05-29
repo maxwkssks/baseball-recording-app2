@@ -6,12 +6,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>⚾ 야구 기록 입력</h1>
+  <h1>🎮 야구 기록 입력</h1>
 
   <form id="recordForm">
-    <input type="hidden" id="editId"> <!-- 수정용 hidden 필드 -->
+    <input type="hidden" id="editId">
     <input type="text" id="playerName" placeholder="선수 이름" required>
-    <select id="positionType" required>
+    <select id="positionType" onchange="toggleFields()" required>
       <option value="">포지션 선택</option>
       <option value="타자">1루수</option>
       <option value="타자">2루수</option>
@@ -22,16 +22,27 @@
       <option value="타자">중견수</option>
       <option value="타자">포수</option>
       <option value="타자">투수</option>
+      <option value="투수">투수</option>
     </select>
 
     <div id="batterFields">
-      <input type="number" id="atBats" placeholder="타수" required>
-      <input type="number" id="hits" placeholder="안타" required>
-      <input type="number" id="doubleHits" placeholder="2루타" required>
-      <input type="number" id="tripleHits" placeholder="3루타" required>
-      <input type="number" id="homeRuns" placeholder="홈런" required>
-      <input type="number" id="steals" placeholder="도루" required>
-      <input type="number" id="walks" placeholder="볼넷" required>
+      <input type="number" id="atBats" placeholder="타수">
+      <input type="number" id="hits" placeholder="안타">
+      <input type="number" id="doubleHits" placeholder="2루타">
+      <input type="number" id="tripleHits" placeholder="3루타">
+      <input type="number" id="homeRuns" placeholder="홈런">
+      <input type="number" id="steals" placeholder="도루">
+      <input type="number" id="walks" placeholder="볼넷">
+      <input type="number" id="rbi" placeholder="타점">
+      <input type="number" id="runs" placeholder="득점">
+    </div>
+
+    <div id="pitcherFields" style="display: none;">
+      <input type="number" id="innings" placeholder="이닝" step="0.1">
+      <input type="number" id="strikeouts" placeholder="삼진">
+      <input type="number" id="pitcherWalks" placeholder="볼넷">
+      <input type="number" id="hitsAllowed" placeholder="피안타">
+      <input type="number" id="homeRunsAllowed" placeholder="피홈런">
     </div>
 
     <button type="submit">기록 저장</button>
@@ -41,22 +52,22 @@
   <table id="recordTable">
     <thead>
       <tr>
-        <th>선수</th>
-        <th>타수</th>
-        <th>안타</th>
-        <th>2루타</th>
-        <th>3루타</th>
-        <th>홈런</th>
-        <th>도루</th>
-        <th>볼넷</th>
-        <th>타율</th>
-        <th>날짜</th>
-        <th>수정</th>
-        <th>삭제</th>
+        <th>선수</th><th>포지션</th>
+        <th>타수</th><th>안타</th><th>2루타</th><th>3루타</th><th>홈런</th><th>도루</th><th>볼넷</th><th>타점</th><th>득점</th>
+        <th>이닝</th><th>삼진</th><th>볼넷</th><th>피안타</th><th>피홈런</th>
+        <th>타율</th><th>날짜</th><th>수정</th><th>삭제</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
+
+  <script>
+    function toggleFields() {
+      const position = document.getElementById("positionType").value;
+      document.getElementById("batterFields").style.display = position === "타자" ? "block" : "none";
+      document.getElementById("pitcherFields").style.display = position === "투수" ? "block" : "none";
+    }
+  </script>
 
   <script src="firebase-config.js" type="module"></script>
   <script src="script.js" type="module"></script>
