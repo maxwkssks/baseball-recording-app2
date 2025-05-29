@@ -13,19 +13,37 @@ document.getElementById("recordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const editId = document.getElementById("editId").value;
+  const position = document.getElementById("positionType").value;
 
-  const data = {
+  let data = {
     name: document.getElementById("playerName").value,
-    position: document.getElementById("positionType").value,
-    atBats: Number(document.getElementById("atBats").value),
-    hits: Number(document.getElementById("hits").value),
-    doubleHits: Number(document.getElementById("doubleHits").value),
-    tripleHits: Number(document.getElementById("tripleHits").value),
-    homeRuns: Number(document.getElementById("homeRuns").value),
-    steals: Number(document.getElementById("steals").value),
-    walks: Number(document.getElementById("walks").value),
+    position,
     date: new Date().toISOString()
   };
+
+  if (position === "타자") {
+    data = {
+      ...data,
+      atBats: Number(document.getElementById("atBats").value),
+      hits: Number(document.getElementById("hits").value),
+      doubleHits: Number(document.getElementById("doubleHits").value),
+      tripleHits: Number(document.getElementById("tripleHits").value),
+      homeRuns: Number(document.getElementById("homeRuns").value),
+      steals: Number(document.getElementById("steals").value),
+      walks: Number(document.getElementById("walks").value),
+      rbi: Number(document.getElementById("rbi").value),
+      runs: Number(document.getElementById("runs").value)
+    };
+  } else if (position === "투수") {
+    data = {
+      ...data,
+      innings: Number(document.getElementById("innings").value),
+      strikeouts: Number(document.getElementById("strikeouts").value),
+      pitcherWalks: Number(document.getElementById("pitcherWalks").value),
+      hitsAllowed: Number(document.getElementById("hitsAllowed").value),
+      homeRunsAllowed: Number(document.getElementById("homeRunsAllowed").value)
+    };
+  }
 
   if (editId) {
     await updateDoc(doc(window.db, "batters", editId), data);
@@ -50,24 +68,28 @@ async function loadRecords() {
     const d = docSnap.data();
     const id = docSnap.id;
     const date = new Date(d.date).toLocaleString();
-    const avg = calculateAverage(d.atBats, d.hits);
+    const avg = calculateAverage(d.atBats ?? 0, d.hits ?? 0);
 
-    tbody.innerHTML += `<tr>
-      <td>${d.name}</td>
-      <td>${d.atBats}</td>
-      <td>${d.hits}</td>
-      <td>${d.doubleHits}</td>
-      <td>${d.tripleHits}</td>
-      <td>${d.homeRuns}</td>
-      <td>${d.steals}</td>
-      <td>${d.walks}</td>
-      <td>.${avg}</td>
-      <td>${date}</td>
-      <td>
-        <button onclick="editRecord('${id}')">수정</button>
-        <button onclick="deleteRecord('${id}')">삭제</button>
-      </td>
-    </tr>`;
+    if (d.position === "타자") {
+      tbody.innerHTML += `<tr>
+        <td>${d.name}</td><td>${d.position}</td>
+        <td>${d.atBats}</td><td>${d.hits}</td><td>${d.doubleHits}</td><td>${d.tripleHits}</td><td>${d.homeRuns}</td>
+        <td>${d.steals}</td><td>${d.walks}</td><td>${d.rbi ?? "-"}</td><td>${d.runs ?? "-"}</td>
+        <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+        <td>.${avg}</td><td>${date}</td>
+        <td><button onclick="editRecord('${id}')">수정</button></td>
+        <td><button onclick="deleteRecord('${id}')">삭제</button></td>
+      </tr>`;
+    } else if (d.position === "투수") {
+      tbody.innerHTML += `<tr>
+        <td>${d.name}</td><td>${d.position}</td>
+        <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+        <td>${d.innings}</td><td>${d.strikeouts}</td><td>${d.pitcherWalks}</td><td>${d.hitsAllowed}</td><td>${d.homeRunsAllowed}</td>
+        <td>-</td><td>${date}</td>
+        <td><button onclick="editRecord('${id}')">수정</button></td>
+        <td><button onclick="deleteRecord('${id}')">삭제</button></td>
+      </tr>`;
+    }
   });
 }
 
@@ -79,13 +101,26 @@ window.editRecord = async function (id) {
   document.getElementById("editId").value = id;
   document.getElementById("playerName").value = d.name;
   document.getElementById("positionType").value = d.position || "";
-  document.getElementById("atBats").value = d.atBats;
-  document.getElementById("hits").value = d.hits;
-  document.getElementById("doubleHits").value = d.doubleHits;
-  document.getElementById("tripleHits").value = d.tripleHits;
-  document.getElementById("homeRuns").value = d.homeRuns;
-  document.getElementById("steals").value = d.steals;
-  document.getElementById("walks").value = d.walks;
+
+  if (d.position === "타자") {
+    document.getElementById("atBats").value = d.atBats ?? "";
+    document.getElementById("hits").value = d.hits ?? "";
+    document.getElementById("doubleHits").value = d.doubleHits ?? "";
+    document.getElementById("tripleHits").value = d.tripleHits ?? "";
+    document.getElementById("homeRuns").value = d.homeRuns ?? "";
+    document.getElementById("steals").value = d.steals ?? "";
+    document.getElementById("walks").value = d.walks ?? "";
+    document.getElementById("rbi").value = d.rbi ?? "";
+    document.getElementById("runs").value = d.runs ?? "";
+  } else if (d.position === "투수") {
+    document.getElementById("innings").value = d.innings ?? "";
+    document.getElementById("strikeouts").value = d.strikeouts ?? "";
+    document.getElementById("pitcherWalks").value = d.pitcherWalks ?? "";
+    document.getElementById("hitsAllowed").value = d.hitsAllowed ?? "";
+    document.getElementById("homeRunsAllowed").value = d.homeRunsAllowed ?? "";
+  }
+
+  toggleFields(); // 포지션에 따라 입력 필드 보이기
 };
 
 window.deleteRecord = async function (id) {
