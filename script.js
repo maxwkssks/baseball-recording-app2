@@ -14,6 +14,17 @@ function calculateERA(runsAllowed, innings) {
   return (runsAllowed * 9 / innings).toFixed(2);
 }
 
+let currentSortField = null;
+let currentSortDirection = "desc";
+
+function sortData(data, field, direction) {
+  return [...data].sort((a, b) => {
+    const valA = a[field] ?? 0;
+    const valB = b[field] ?? 0;
+    return direction === "asc" ? valA - valB : valB - valA;
+  });
+}
+
 document.getElementById("recordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -69,17 +80,28 @@ document.getElementById("recordForm").addEventListener("submit", async (e) => {
   loadRecords();
 });
 
-async function loadRecords() {
+async function loadRecords(sortField = null, sortDirection = "desc") {
   const tbody = document.querySelector("#recordTable tbody");
   tbody.innerHTML = "";
   const q = query(collection(window.db, "batters"), orderBy("date", "desc"));
   const snapshot = await getDocs(q);
 
+  let dataList = [];
+
   snapshot.forEach(docSnap => {
     const d = docSnap.data();
-    const id = docSnap.id;
+    d.id = docSnap.id;
+    d.avg = calculateAverage(d.atBats ?? 0, d.hits ?? 0);
+    dataList.push(d);
+  });
+
+  if (sortField) {
+    dataList = sortData(dataList, sortField, sortDirection);
+  }
+
+  dataList.forEach(d => {
+    const id = d.id;
     const date = new Date(d.date).toLocaleString();
-    const avg = calculateAverage(d.atBats ?? 0, d.hits ?? 0);
 
     if (d.position === "투수") {
       tbody.innerHTML += `<tr>
@@ -97,7 +119,7 @@ async function loadRecords() {
         <td>${d.atBats}</td><td>${d.hits}</td><td>${d.doubleHits}</td><td>${d.tripleHits}</td><td>${d.homeRuns}</td>
         <td>${d.steals}</td><td>${d.walks}</td><td>${d.rbi ?? "-"}</td><td>${d.runs ?? "-"}</td>
         <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
-        <td>.${avg}</td><td>${date}</td>
+        <td>.${d.avg}</td><td>${date}</td>
         <td><button onclick="editRecord('${id}')">수정</button></td>
         <td><button onclick="deleteRecord('${id}')">삭제</button></td>
       </tr>`;
@@ -144,4 +166,10 @@ window.deleteRecord = async function (id) {
   }
 };
 
-window.addEventListener("load", loadRecords);
+window.addEventListener("load", () => loadRecords());
+
+window.setSort = function (field, direction) {
+  currentSortField = field;
+  currentSortDirection = direction;
+  loadRecords(field, direction);
+};

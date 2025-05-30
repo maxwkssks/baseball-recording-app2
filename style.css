@@ -1,29 +1,30 @@
-body {
-  font-family: sans-serif;
-  background: #121212;
-  color: white;
-  padding: 20px;
+/* 정렬 버튼 컨테이너 */
+#sortButtons {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
-input, button, select {
-  margin: 5px;
-}
-table {
-  margin-top: 20px;
-  width: 100%;
-  border-collapse: collapse;
-  background: #1e1e1e;
-}
-th, td {
-  border: 1px solid gray;
-  padding: 8px;
-}
-button {
-  background: #333;
-  color: white;
-  border: none;
-  padding: 5px 10px;
+
+/* 정렬 버튼 공통 스타일 */
+#sortButtons button {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
   cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
-button:hover {
-  background: #555;
+
+/* 마우스 호버 효과 */
+#sortButtons button:hover {
+  background-color: #e0e0e0;
+}
+
+/* 정렬 상태 표시 (선택된 버튼) */
+#sortButtons button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
 }
