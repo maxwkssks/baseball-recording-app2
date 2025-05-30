@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>야구 기록 입력</title>
+  <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🎮 야구 기록 입력</h1>
+  <h1>⚾ 야구 기록 입력</h1>
 
   <form id="recordForm">
     <input type="hidden" id="editId">
     <input type="text" id="playerName" placeholder="선수 이름" required>
     <select id="positionType" onchange="toggleFields()" required>
       <option value="">포지션 선택</option>
-      <option value="타자">1루수</option>
-      <option value="타자">2루수</option>
-      <option value="타자">3루수</option>
-      <option value="타자">유격수</option>
-      <option value="타자">좌익수</option>
-      <option value="타자">우익수</option>
-      <option value="타자">중견수</option>
-      <option value="타자">포수</option>
-      <option value="타자">투수 타석기록용</option>
+      <option value="1루수">1루수</option>
+      <option value="2루수">2루수</option>
+      <option value="3루수">3루수</option>
+      <option value="유격수">유격수</option>
+      <option value="좌익수">좌익수</option>
+      <option value="우익수">우익수</option>
+      <option value="중견수">중견수</option>
+      <option value="포수">포수</option>
+      <option value="투수 타석기록용">투수 타석기록용</option>
       <option value="투수">투수</option>
     </select>
 
@@ -49,18 +50,17 @@
     <button type="submit">기록 저장</button>
   </form>
 
-  <h2>📊 기록 목록</h2>
-
-  <div class="sort-buttons">
-    <strong>정렬:</strong>
-    <button onclick="setSort('avg', 'asc')">타율 ▲</button>
+  <!-- 정렬 버튼 영역 -->
+  <div id="sortButtons">
     <button onclick="setSort('avg', 'desc')">타율 ▼</button>
-    <button onclick="setSort('hits', 'asc')">안타 ▲</button>
+    <button onclick="setSort('avg', 'asc')">타율 ▲</button>
     <button onclick="setSort('hits', 'desc')">안타 ▼</button>
-    <button onclick="setSort('homeRuns', 'asc')">홈런 ▲</button>
+    <button onclick="setSort('hits', 'asc')">안타 ▲</button>
     <button onclick="setSort('homeRuns', 'desc')">홈런 ▼</button>
+    <button onclick="setSort('homeRuns', 'asc')">홈런 ▲</button>
   </div>
 
+  <h2>📊 기록 목록</h2>
   <table id="recordTable">
     <thead>
       <tr>
@@ -76,7 +76,7 @@
   <script>
     function toggleFields() {
       const position = document.getElementById("positionType").value;
-      document.getElementById("batterFields").style.display = position === "타자" ? "block" : "none";
+      document.getElementById("batterFields").style.display = position === "투수" ? "none" : "block";
       document.getElementById("pitcherFields").style.display = position === "투수" ? "block" : "none";
     }
   </script>
